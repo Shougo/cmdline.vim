@@ -15,7 +15,7 @@ function cmdline#_init_options() abort
   let s:options = #{
         \   border: 'none',
         \   col: (&columns - 80) / 2 - 10,
-        \   highlight_normal_menu: 'WildMenu',
+        \   highlight_window: 'WildMenu',
         \   row: &lines / 2 - 10,
         \   width: 80,
         \   zindex: 1000,
@@ -107,7 +107,7 @@ function cmdline#enable() abort
       " Create new window
       const id = nvim_open_win(cmdline.buf, v:false, winopts)
 
-      call s:set_float_window_options(id, options, 'normal_menu')
+      call s:set_float_window_options(id, options, 'window')
 
       let cmdline.id = id
     endif
@@ -116,7 +116,7 @@ function cmdline#enable() abort
           \   pos: 'topleft',
           \   line: options.row + 1,
           \   col: options.col + 1,
-          \   highlight: options.highlight_normal_menu,
+          \   highlight: options.highlight_window,
           \   maxheight: 1,
           \   minwidth: options.width,
           \   wrap: v:true,

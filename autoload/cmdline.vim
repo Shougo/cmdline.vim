@@ -8,7 +8,7 @@ function cmdline#_init() abort
   let s:cmdline = #{
         \   buf: -1,
         \   id: -1,
-        \   propmt: '',
+        \   prompt: '',
         \ }
 endfunction
 function cmdline#_init_options() abort

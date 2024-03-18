@@ -58,10 +58,10 @@ function cmdline#input(
   let cmdline.prompt = a:prompt
 
   if cmdline#enable()
-    return
+    return ''
   endif
 
-  call input(a:prompt, a:text, a:completion)
+  return input(a:prompt, a:text, a:completion)
 endfunction
 
 function cmdline#enable() abort

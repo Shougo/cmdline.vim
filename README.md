@@ -28,6 +28,10 @@ recommended) or Vim 9.0.1276+.
 ## Configuration
 
 ```vim
+call cmdline#set_option(#{
+  \   highlight_prompt: 'Statement',
+  \   highlight_window: 'None',
+  \ })
 ```
 
 ## Screenshots

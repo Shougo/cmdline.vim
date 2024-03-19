@@ -52,6 +52,12 @@ col
 
 		Default: (&columns - 80) / 2 - 10
 
+                                            *cmdline-options-highlight_cursor*
+highlight_cursor
+		The highlight of the cursor.
+
+		Default: "Cursor"
+
                                             *cmdline-options-highlight_prompt*
 highlight_prompt
 		The highlight of the |input()| prompt.
@@ -106,6 +112,10 @@ cmdline#set_option({dict})
 ==============================================================================
 EXAMPLES                                                    *cmdline-examples*
 >
+	call cmdline#set_option(#{
+	  \   highlight_prompt: 'Statement',
+	  \   highlight_window: 'None',
+	  \ })
 <
 
 ==============================================================================

@@ -1,6 +1,7 @@
 let g:cmdline#_namespace = has('nvim') ? nvim_create_namespace('cmdline') : 0
 
 const s:priority_highlight_prompt = 0
+const s:priority_highlight_cursor = 1
 
 function cmdline#_get() abort
   if !'s:cmdline'->exists()
@@ -12,6 +13,7 @@ function cmdline#_init() abort
   let s:cmdline = #{
         \   buf: -1,
         \   id: -1,
+        \   pos: [],
         \   prompt: '',
         \ }
 endfunction
@@ -19,6 +21,7 @@ function cmdline#_init_options() abort
   let s:options = #{
         \   border: 'none',
         \   col: (&columns - 80) / 2 - 10,
+        \   highlight_cursor: 'Cursor',
         \   highlight_prompt: 'WildMenu',
         \   highlight_window: 'WildMenu',
         \   row: &lines / 2 - 10,
@@ -137,6 +140,11 @@ function cmdline#enable() abort
     endif
   endif
 
+  let cmdline.pos = [options.row, options.col]
+
+  " NOTE: Disable cmdline area highlight
+  "highlight MsgArea  gui=NONE guibg=#000000 guifg=#000000
+
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * call s:redraw_cmdline()
     autocmd CmdlineLeave * call cmdline#_close()
@@ -163,6 +171,7 @@ function cmdline#_close() abort
 
   let cmdline.id = -1
   let cmdline.prompt = ''
+  let cmdline.pos = []
 
   augroup cmdline
     autocmd!
@@ -175,7 +184,7 @@ function s:redraw_cmdline() abort
     return
   endif
 
-  const text = printf('%s %s', cmdline.prompt, getcmdline())
+  const text = printf('%s %s ', cmdline.prompt, getcmdline())
 
   call setbufline(cmdline.buf, 1, text)
 
@@ -190,6 +199,14 @@ function s:redraw_cmdline() abort
     " Clear highlights
     call nvim_buf_clear_namespace(cmdline.buf, g:cmdline#_namespace, 1, -1)
   endif
+
+  " Highlight the cursor
+  call s:overwrite_highlight(
+        \ options.highlight_cursor,
+        \ 'cmdline_highlight_cursor',
+        \ -1,
+        \ s:priority_highlight_cursor,
+        \ 1, cmdline.prompt->strlen() + getcmdpos() + 1, 1)
 
   " Highlight the prompt
   if cmdline.prompt !=# ''

@@ -1,3 +1,7 @@
+let g:cmdline#_namespace = has('nvim') ? nvim_create_namespace('cmdline') : 0
+
+const s:priority_highlight_prompt = 1
+
 function cmdline#_get() abort
   if !'s:cmdline'->exists()
     call cmdline#_init()
@@ -15,6 +19,7 @@ function cmdline#_init_options() abort
   let s:options = #{
         \   border: 'none',
         \   col: (&columns - 80) / 2 - 10,
+        \   highlight_prompt: 'WildMenu',
         \   highlight_window: 'WildMenu',
         \   row: &lines / 2 - 10,
         \   width: 80,
@@ -174,13 +179,27 @@ function s:redraw_cmdline() abort
 
   call setbufline(cmdline.buf, 1, text)
 
-  if has('nvim')
-    let options = cmdline#_options()
+  let options = cmdline#_options()
 
+  if has('nvim')
     " NOTE: auto resize width
     call nvim_win_set_config(cmdline.id, #{
           \   width: max([strwidth(text), options.width]),
           \ })
+
+    " Clear highlights
+    call nvim_buf_clear_namespace(cmdline.buf, g:cmdline#_namespace, 1, -1)
+  endif
+
+  " Highlight the prompt
+  if cmdline.prompt !=# ''
+    call s:overwrite_highlight(
+          \ options.highlight_prompt,
+          \ 'cmdline_highlight_prompt',
+          \ -1,
+          \ s:priority_highlight_prompt,
+          \ 1, 1, cmdline.prompt->strlen())
+    echomsg nvim_buf_get_extmarks(cmdline.buf, g:cmdline#_namespace, 0, -1, {})
   endif
 
   " NOTE: ":redraw" is needed to update screen in command line.
@@ -206,4 +225,50 @@ function cmdline#_print_error(string) abort
   echomsg printf('[cmdline] %s', a:string->type() ==# v:t_string ?
         \ a:string : a:string->string())
   echohl None
+endfunction
+
+function s:highlight(highlight, prop_type, priority, row, col, length) abort
+  let cmdline = cmdline#_get()
+
+  if has('nvim')
+    return nvim_buf_set_extmark(
+          \ cmdline.buf, g:cmdline#_namespace, a:row - 1, col - 1, #{
+          \   end_col: a:col - 1 + a:length,
+          \   hl_group: a:highlight,
+          \   priority: a:priority,
+          \ })
+  else
+    " Add prop_type
+    if a:prop_type->prop_type_get()->empty()
+      call prop_type_add(a:prop_type, #{
+            \   highlight: a:highlight,
+            \   priority: a:priority,
+            \ })
+    endif
+    call prop_add(a:row, a:col, #{
+          \   length: a:length,
+          \   type: a:prop_type,
+          \   bufnr: cmdline.buf,
+          \ })
+    return -1
+  endif
+endfunction
+
+function s:clear_highlight(prop_type, id) abort
+  let cmdline = cmdline#_get()
+
+  if has('nvim')
+    call nvim_buf_del_extmark(cmdline.buf, g:cmdline#_namespace, a:id)
+  elseif !a:prop_type->prop_type_get()->empty()
+    call prop_remove(#{
+          \   type: a:prop_type,
+          \   bufnr: cmdline.buf,
+          \ })
+  endif
+endfunction
+
+function s:overwrite_highlight(highlight, prop_type, id, priority, row, col, length) abort
+  call s:clear_highlight(a:prop_type, a:id)
+  call s:highlight(
+        \ a:highlight, a:prop_type, a:priority, a:row, a:col, a:length)
 endfunction

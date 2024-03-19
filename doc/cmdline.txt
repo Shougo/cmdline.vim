@@ -52,6 +52,13 @@ col
 
 		Default: (&columns - 80) / 2 - 10
 
+                                            *cmdline-options-highlight_prompt*
+highlight_prompt
+		The highlight of the |input()| prompt.
+		NOTE: It is available for |cmdline#input()|.
+
+		Default: "Wildmenu"
+
                                             *cmdline-options-highlight_window*
 highlight_window
 		The highlight of the floating window.

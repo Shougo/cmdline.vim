@@ -1,6 +1,6 @@
 let g:cmdline#_namespace = has('nvim') ? nvim_create_namespace('cmdline') : 0
 
-const s:priority_highlight_prompt = 1
+const s:priority_highlight_prompt = 0
 
 function cmdline#_get() abort
   if !'s:cmdline'->exists()
@@ -138,7 +138,7 @@ function cmdline#enable() abort
   endif
 
   augroup cmdline
-    autocmd CmdlineChanged * call s:redraw_cmdline()
+    autocmd CmdlineEnter,CmdlineChanged * call s:redraw_cmdline()
     autocmd CmdlineLeave * call cmdline#_close()
   augroup END
 endfunction
@@ -199,7 +199,6 @@ function s:redraw_cmdline() abort
           \ -1,
           \ s:priority_highlight_prompt,
           \ 1, 1, cmdline.prompt->strlen())
-    echomsg nvim_buf_get_extmarks(cmdline.buf, g:cmdline#_namespace, 0, -1, {})
   endif
 
   " NOTE: ":redraw" is needed to update screen in command line.
@@ -232,7 +231,7 @@ function s:highlight(highlight, prop_type, priority, row, col, length) abort
 
   if has('nvim')
     return nvim_buf_set_extmark(
-          \ cmdline.buf, g:cmdline#_namespace, a:row - 1, col - 1, #{
+          \ cmdline.buf, g:cmdline#_namespace, a:row - 1, a:col - 1, #{
           \   end_col: a:col - 1 + a:length,
           \   hl_group: a:highlight,
           \   priority: a:priority,
@@ -267,7 +266,8 @@ function s:clear_highlight(prop_type, id) abort
   endif
 endfunction
 
-function s:overwrite_highlight(highlight, prop_type, id, priority, row, col, length) abort
+function s:overwrite_highlight(
+      \ highlight, prop_type, id, priority, row, col, length) abort
   call s:clear_highlight(a:prop_type, a:id)
   call s:highlight(
         \ a:highlight, a:prop_type, a:priority, a:row, a:col, a:length)

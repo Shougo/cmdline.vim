@@ -175,7 +175,7 @@ function cmdline#_close() abort
 
   augroup cmdline
     autocmd!
-  autocmd END
+  augroup END
 endfunction
 
 function s:redraw_cmdline() abort

@@ -37,6 +37,13 @@ OPTIONS                                                      *cmdline-options*
 
 Options can be toggled through the use of |cmdline#set_option()|.
 
+                                                       *cmdline-options-blend*
+blend
+		Specify 'winblend' option value.
+		NOTE: neovim only feature.
+
+		Default: 'pumblend' value
+
                                                       *cmdline-options-border*
 border
 		The completion window border.  You can specify border
@@ -63,7 +70,7 @@ highlight_prompt
 		The highlight of the |input()| prompt.
 		NOTE: It is available for |cmdline#input()|.
 
-		Default: "MsgArea"
+		Default: "Question"
 
                                             *cmdline-options-highlight_window*
 highlight_window
@@ -75,7 +82,7 @@ highlight_window
 row
 		Floating window row.
 
-		Default: &lines / 2 - 10
+		Default: &lines / 2
 
                                                        *cmdline-options-width*
 width

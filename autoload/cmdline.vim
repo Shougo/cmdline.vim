@@ -19,12 +19,13 @@ function cmdline#_init() abort
 endfunction
 function cmdline#_init_options() abort
   let s:options = #{
+        \   blend: '+pumblend'->exists() ? &pumblend : 0,
         \   border: 'none',
         \   col: (&columns - 80) / 2 - 10,
         \   highlight_cursor: 'Cursor',
-        \   highlight_prompt: 'MsgArea',
+        \   highlight_prompt: 'Question',
         \   highlight_window: 'MsgArea',
-        \   row: &lines / 2 - 10,
+        \   row: &lines / 2,
         \   width: 80,
         \   zindex: 1000,
         \ }
@@ -34,9 +35,7 @@ function cmdline#_options() abort
     call cmdline#_init_options()
   endif
 
-  let options = s:options->copy()
-
-  return options
+  return s:options->copy()
 endfunction
 
 function cmdline#set_option(key_or_dict, value = '') abort
@@ -142,9 +141,6 @@ function cmdline#enable() abort
 
   let cmdline.pos = [options.row, options.col]
 
-  " NOTE: Disable cmdline area highlight
-  "highlight MsgArea  gui=NONE guibg=#000000 guifg=#000000
-
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * call s:redraw_cmdline()
     autocmd CmdlineLeave * call cmdline#_close()
@@ -231,7 +227,7 @@ function s:set_float_window_options(id, options, highlight) abort
   endif
 
   call setwinvar(a:id, '&winhighlight', highlight)
-  call setwinvar(a:id, '&winblend', &l:pumblend)
+  call setwinvar(a:id, '&winblend', a:options.blend)
   call setwinvar(a:id, '&wrap', v:true)
   call setwinvar(a:id, '&scrolloff', 0)
 endfunction

@@ -20,7 +20,7 @@ endfunction
 function cmdline#_init_options() abort
   let s:options = #{
         \   blend: '+pumblend'->exists() ? &pumblend : 0,
-        \   border: 'none',
+        \   border: 'single',
         \   col: (&columns - 80) / 2 - 10,
         \   highlight_cursor: 'Cursor',
         \   highlight_prompt: 'Question',
@@ -124,11 +124,23 @@ function cmdline#enable() abort
           \   line: options.row + 1,
           \   col: options.col + 1,
           \   highlight: options.highlight_window,
+          \   border: [],
+          \   borderchars: [],
           \   maxheight: 1,
           \   minwidth: options.width,
           \   wrap: v:true,
           \   zindex: options.zindex,
           \ }
+
+    if options.border->type() ==# v:t_string
+      if options.border ==# 'double'
+        let winopts.border = [2, 2, 2, 2]
+      elseif options.border !=# 'none'
+        let winopts.border = [1, 1, 1, 1]
+      endif
+    else
+      let winopts.borderchars = options.border
+    endif
 
     if cmdline.id > 0
       call popup_move(cmdline.id, winopts)

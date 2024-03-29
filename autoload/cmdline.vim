@@ -124,8 +124,6 @@ function cmdline#enable() abort
           \   line: options.row + 1,
           \   col: options.col + 1,
           \   highlight: options.highlight_window,
-          \   border: [],
-          \   borderchars: [],
           \   maxheight: 1,
           \   minwidth: options.width,
           \   wrap: v:true,

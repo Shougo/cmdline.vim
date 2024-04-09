@@ -15,8 +15,8 @@ function cmdline#_init() abort
         \   id: -1,
         \   pos: [],
         \   prompt: '',
-        \   hl_msg: '',
-        \   hl_cursor: '',
+        \   hl_msg: has('nvim') ? '' : [],
+        \   hl_cursor: has('nvim') ? '' : [],
         \ }
 endfunction
 function cmdline#_init_options() abort
@@ -204,7 +204,7 @@ function cmdline#_close() abort
     " popup_close() removes the buffer.
     call popup_close(cmdline.id)
 
-    call hlset(hl_msg + cmdline.hl_cursor)
+    call hlset(cmdline.hl_msg + cmdline.hl_cursor)
   endif
 
   let cmdline.id = -1

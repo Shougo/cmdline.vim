@@ -17,6 +17,7 @@ function cmdline#_init() abort
         \   prompt: '',
         \   hl_msg: has('nvim') ? '' : [],
         \   hl_cursor: has('nvim') ? '' : [],
+        \   t_ve: has('nvim') ? '' : &t_ve,
         \ }
 endfunction
 function cmdline#_init_options() abort
@@ -86,11 +87,11 @@ function cmdline#enable() abort
   const text = printf('%s %s', cmdline.prompt, getcmdline())
 
   const hl_normal = has('nvim') ?
-        \ nvim_get_hl(0, #{ name: 'Normal'}) : hlget('Normal')
+        \ nvim_get_hl(0, #{ name: 'Normal'}) : 'Normal'->hlget()
   const hl_msg = has('nvim') ?
-        \ nvim_get_hl(0, #{ name: 'MsgArea'}) : hlget('MsgArea')
+        \ nvim_get_hl(0, #{ name: 'MsgArea'}) : 'MsgArea'->hlget()
   const hl_cursor = has('nvim') ?
-        \ nvim_get_hl(0, #{ name: 'Cursor'}) : hlget('Cursor')
+        \ nvim_get_hl(0, #{ name: 'Cursor'}) : 'Cursor'->hlget()
 
   if has('nvim')
     if cmdline.buf < 0
@@ -102,7 +103,7 @@ function cmdline#enable() abort
     let winopts = #{
           \   border: options.border,
           \   relative: 'editor',
-          \   width: max([strwidth(text), options.width]),
+          \   width: max([text->strwidth(), options.width]),
           \   height: 1,
           \   row: options.row,
           \   col: options.col,
@@ -128,8 +129,11 @@ function cmdline#enable() abort
       let cmdline.id = id
     endif
 
-    call nvim_set_hl(0, 'MsgArea', #{ fg: hl_normal.bg, bg: hl_normal.bg })
-    call nvim_set_hl(0, 'Cursor', #{ fg: hl_normal.bg, bg: hl_normal.bg })
+    let hidden_base = hl_normal->copy()
+    let hidden_base.fg = hidden_base.bg
+
+    call nvim_set_hl(0, 'MsgArea', hidden_base)
+    call nvim_set_hl(0, 'Cursor', hidden_base)
   else
     let winopts = #{
           \   pos: 'topleft',
@@ -160,17 +164,27 @@ function cmdline#enable() abort
       let cmdline.buf = cmdline.id->winbufnr()
     endif
 
+    " NOTE: Disable cursor
+    let cmdline.t_ve = &t_ve
+    set t_ve=
+
+    let hidden_base = hl_normal[0]->copy()
+    if hidden_base->has_key('guifg')
+      let hidden_base.guifg = hidden_base.guibg
+    endif
+    if hidden_base->has_key('ctermfg')
+      let hidden_base.ctermfg = hidden_base.guibg
+    endif
+
+    let hidden_msgarea = hidden_base->copy()
+    let hidden_msgarea.name = 'MsgArea'
+
+    let hidden_cursor = hidden_base->copy()
+    let hidden_cursor.name = 'Cursor'
+
     call hlset([
-          \   #{
-          \     name: 'MsgArea',
-          \     guifg: hl_normal[0].guibg,
-          \     guibg: hl_normal[0].guibg,
-          \   },
-          \   #{
-          \     name: 'Cursor',
-          \     guifg: hl_normal[0].guibg,
-          \     guibg: hl_normal[0].guibg,
-          \   },
+          \   hidden_msgarea,
+          \   hidden_cursor,
           \ ])
   endif
 
@@ -180,7 +194,7 @@ function cmdline#enable() abort
 
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * call s:redraw_cmdline()
-    autocmd CmdlineLeave * call cmdline#_close()
+    autocmd CmdlineLeave,VimLeavePre * call cmdline#_close()
   augroup END
 endfunction
 
@@ -205,6 +219,8 @@ function cmdline#_close() abort
     call popup_close(cmdline.id)
 
     call hlset(cmdline.hl_msg + cmdline.hl_cursor)
+
+    let &t_ve = cmdline.t_ve
   endif
 
   let cmdline.id = -1
@@ -231,7 +247,7 @@ function s:redraw_cmdline() abort
   if has('nvim')
     " NOTE: auto resize width
     call nvim_win_set_config(cmdline.id, #{
-          \   width: max([strwidth(text), options.width]),
+          \   width: [text->strwidth(), options.width]->max(),
           \ })
 
     " Clear highlights

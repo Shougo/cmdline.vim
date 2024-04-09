@@ -110,14 +110,14 @@ FUNCTIONS                                                  *cmdline-functions*
 
                                                             *cmdline#enable()*
 cmdline#enable()
-	Enable cmdline handler.  It is enabled when |CmdlineEnter|.
-	NOTE: It is disabled when |CmdlineLeave|.
+		Enable cmdline handler.  It is enabled when |CmdlineEnter|.
+		NOTE: It is disabled when |CmdlineLeave|.
 
                                                              *cmdline#input()*
 cmdline#input({prompt} [, {text} [, {completion}]])
-	Call |input()| with |cmdline#enable()|.
-	It can replace normal |input()|.
-	Please see |input()| for args.
+		Call |input()| with |cmdline#enable()|.
+		It can replace normal |input()|.
+		Please see |input()| for args.
 
                                                         *cmdline#set_option()*
 cmdline#set_option({option-name}, {value})

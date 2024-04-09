@@ -15,6 +15,8 @@ function cmdline#_init() abort
         \   id: -1,
         \   pos: [],
         \   prompt: '',
+        \   hl_msg: '',
+        \   hl_cursor: '',
         \ }
 endfunction
 function cmdline#_init_options() abort
@@ -68,7 +70,7 @@ function cmdline#input(
     return ''
   endif
 
-  return input(a:prompt, a:text, a:completion)
+  return a:prompt->input(a:text, a:completion)
 endfunction
 
 function cmdline#enable() abort
@@ -82,6 +84,13 @@ function cmdline#enable() abort
   let options = cmdline#_options()
 
   const text = printf('%s %s', cmdline.prompt, getcmdline())
+
+  const hl_normal = has('nvim') ?
+        \ nvim_get_hl(0, #{ name: 'Normal'}) : hlget('Normal')
+  const hl_msg = has('nvim') ?
+        \ nvim_get_hl(0, #{ name: 'MsgArea'}) : hlget('MsgArea')
+  const hl_cursor = has('nvim') ?
+        \ nvim_get_hl(0, #{ name: 'Cursor'}) : hlget('Cursor')
 
   if has('nvim')
     if cmdline.buf < 0
@@ -118,6 +127,9 @@ function cmdline#enable() abort
 
       let cmdline.id = id
     endif
+
+    call nvim_set_hl(0, 'MsgArea', #{ fg: hl_normal.bg, bg: hl_normal.bg })
+    call nvim_set_hl(0, 'Cursor', #{ fg: hl_normal.bg, bg: hl_normal.bg })
   else
     let winopts = #{
           \   pos: 'topleft',
@@ -147,9 +159,24 @@ function cmdline#enable() abort
       let cmdline.id = [text]->popup_create(winopts)
       let cmdline.buf = cmdline.id->winbufnr()
     endif
+
+    call hlset([
+          \   #{
+          \     name: 'MsgArea',
+          \     guifg: hl_normal[0].guibg,
+          \     guibg: hl_normal[0].guibg,
+          \   },
+          \   #{
+          \     name: 'Cursor',
+          \     guifg: hl_normal[0].guibg,
+          \     guibg: hl_normal[0].guibg,
+          \   },
+          \ ])
   endif
 
   let cmdline.pos = [options.row, options.col]
+  let cmdline.hl_msg = hl_msg
+  let cmdline.hl_cursor = hl_cursor
 
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * call s:redraw_cmdline()
@@ -169,10 +196,15 @@ function cmdline#_close() abort
 
   if has('nvim')
     call nvim_win_close(cmdline.id, v:true)
+
+    call nvim_set_hl(0, 'MsgArea', cmdline.hl_msg)
+    call nvim_set_hl(0, 'Cursor', cmdline.hl_cursor)
   else
     " NOTE: prop_remove() is not needed.
     " popup_close() removes the buffer.
     call popup_close(cmdline.id)
+
+    call hlset(hl_msg + cmdline.hl_cursor)
   endif
 
   let cmdline.id = -1

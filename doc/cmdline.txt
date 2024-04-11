@@ -28,6 +28,7 @@ INSTALL                                                      *cmdline-install*
 NOTE: cmdline.vim requires Neovim (0.8.0+) or Vim 9.0.1276+ (latest is
 recommended).
 
+NOTE: You need to set 'guicursor' option to hide cursor.
 
 ==============================================================================
 INTERFACE                                                  *cmdline-interface*
@@ -85,7 +86,7 @@ highlight_prompt
 highlight_window
 		The highlight of the floating window.
 
-		Default: "MsgArea"
+		Default: "Normal"
 
                                                          *cmdline-options-row*
 row

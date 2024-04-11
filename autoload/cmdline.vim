@@ -27,7 +27,7 @@ function cmdline#_init_options() abort
         \   col: (&columns - 80) / 2 - 10,
         \   highlight_cursor: 'Cursor',
         \   highlight_prompt: 'Question',
-        \   highlight_window: 'MsgArea',
+        \   highlight_window: 'Normal',
         \   row: &lines / 2,
         \   width: 80,
         \   zindex: 1000,
@@ -71,7 +71,11 @@ function cmdline#input(
     return ''
   endif
 
-  return a:prompt->input(a:text, a:completion)
+  const input = a:prompt->input(a:text, a:completion)
+
+  call cmdline#_close()
+
+  return input
 endfunction
 
 function cmdline#enable() abort
@@ -103,7 +107,7 @@ function cmdline#enable() abort
     let winopts = #{
           \   border: options.border,
           \   relative: 'editor',
-          \   width: max([text->strwidth(), options.width]),
+          \   width: [text->strwidth(), options.width]->max(),
           \   height: 1,
           \   row: options.row,
           \   col: options.col,
@@ -130,7 +134,13 @@ function cmdline#enable() abort
     endif
 
     let hidden_base = hl_normal->copy()
-    let hidden_base.fg = hidden_base.bg
+    if hidden_base->has_key('bg')
+      let hidden_base.fg = hidden_base.bg
+    else
+      " For transparency
+      let hidden_base.fg = 0
+      let hidden_base.bg = 0
+    endif
 
     call nvim_set_hl(0, 'MsgArea', hidden_base)
     call nvim_set_hl(0, 'Cursor', hidden_base)
@@ -193,9 +203,12 @@ function cmdline#enable() abort
   let cmdline.hl_cursor = hl_cursor
 
   augroup cmdline
-    autocmd CmdlineEnter,CmdlineChanged * call s:redraw_cmdline()
-    autocmd CmdlineLeave,VimLeavePre * call cmdline#_close()
+    autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
+    autocmd CmdlineLeave,VimLeavePre * ++nested call cmdline#_close()
   augroup END
+
+  " NOTE: redraw is needed
+  redraw
 endfunction
 
 function cmdline#_dummy(arglead, cmdline, cursor) abort

@@ -303,10 +303,13 @@ function s:set_float_window_options(id, options, highlight) abort
   call setwinvar(a:id, '&scrolloff', 0)
 endfunction
 
-function cmdline#_print_error(string) abort
+function cmdline#_print_error(string, name = 'cmdline') abort
   echohl Error
-  echomsg printf('[cmdline] %s', a:string->type() ==# v:t_string ?
-        \ a:string : a:string->string())
+  for line in
+        \ (a:string->type() ==# v:t_string ? a:string : a:string->string())
+        \ ->split("\n")->filter({ _, val -> val != ''})
+    echomsg printf('[%s] %s', a:name, line)
+  endfor
   echohl None
 endfunction
 

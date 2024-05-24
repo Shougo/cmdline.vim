@@ -139,8 +139,19 @@ EXAMPLES                                                    *cmdline-examples*
 ==============================================================================
 FREQUENTLY ASKED QUESTIONS (FAQ)                                 *cmdline-faq*
 
+FAQ 1:                                                         |cmdline-faq-1|
+	I want to enable cmdline.vim when |:| is pressed.
 
 ------------------------------------------------------------------------------
+
+                                                               *cmdline-faq-1*
+I want to enable cmdline.vim when |:| is pressed.
+
+You can configure mapping like this. >
+	nnoremap :  <Cmd>call cmdline#enable()<CR>:
+
+NOTE:  You can use |CmdlineEnter| autocmd like this, but it is dangerous. >
+	autocmd CmdlineEnter * call cmdline#enable()	
 
 ==============================================================================
 COMPATIBILITY                                          *cmdline-compatibility*

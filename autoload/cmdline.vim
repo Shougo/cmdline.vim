@@ -207,6 +207,10 @@ function cmdline#enable() abort
     autocmd CmdlineLeave,VimLeavePre * ++nested call cmdline#_close()
   augroup END
 
+  if '##CmdlineMoved'->exists()
+    autocmd cmdline CmdlineMoved * ++nested call s:redraw_cmdline()
+  endif
+
   " NOTE: redraw is needed
   redraw
 endfunction

@@ -18,6 +18,7 @@ function cmdline#_init() abort
         \   hl_msg: has('nvim') ? '' : [],
         \   hl_cursor: has('nvim') ? '' : [],
         \   t_ve: has('nvim') ? '' : &t_ve,
+        \   guicursor: has('nvim') ? &guicursor : '',
         \ }
 endfunction
 function cmdline#_init_options() abort
@@ -25,7 +26,7 @@ function cmdline#_init_options() abort
         \   blend: '+pumblend'->exists() ? &pumblend : 0,
         \   border: 'single',
         \   col: (&columns - 80) / 2 - 10,
-        \   highlight_cursor: 'Cursor',
+        \   highlight_cursor: 'lCursor',
         \   highlight_prompt: 'Question',
         \   highlight_window: 'Normal',
         \   row: &lines / 2,
@@ -141,6 +142,18 @@ function cmdline#enable() abort
       let hidden_base.fg = 0
       let hidden_base.bg = 0
     endif
+    if hidden_base->has_key('ctermbg')
+      let hidden_base.ctermfg = hidden_base.ctermbg
+    else
+      " For transparency
+      let hidden_base.ctermfg = 0
+      let hidden_base.ctermbg = 0
+    endif
+
+    " NOTE: Disable cursor
+    let cmdline.guicursor = &guicursor
+    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,
+          \i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 
     call nvim_set_hl(0, 'MsgArea', hidden_base)
     call nvim_set_hl(0, 'Cursor', hidden_base)
@@ -230,6 +243,8 @@ function cmdline#_close() abort
 
     call nvim_set_hl(0, 'MsgArea', cmdline.hl_msg)
     call nvim_set_hl(0, 'Cursor', cmdline.hl_cursor)
+
+    let &guicursor = cmdline.guicursor
   else
     " NOTE: prop_remove() is not needed.
     " popup_close() removes the buffer.

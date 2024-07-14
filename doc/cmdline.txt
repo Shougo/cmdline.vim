@@ -72,8 +72,10 @@ col
                                             *cmdline-options-highlight_cursor*
 highlight_cursor
 		The highlight of the cursor.
+		NOTE: It cannot use |hl-Cursor| highlight. Because it is
+		cleared.
 
-		Default: "Cursor"
+		Default: "lCursor"
 
                                             *cmdline-options-highlight_prompt*
 highlight_prompt
@@ -119,6 +121,7 @@ cmdline#input({prompt} [, {text} [, {completion}]])
 		Call |input()| with |cmdline#enable()|.
 		It can replace normal |input()|.
 		Please see |input()| for args.
+		NOTE: It does not support |:echohl|.
 
                                                         *cmdline#set_option()*
 cmdline#set_option({option-name}, {value})

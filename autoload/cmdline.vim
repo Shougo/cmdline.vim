@@ -30,6 +30,8 @@ function cmdline#_init_options() abort
         \   highlight_prompt: 'Question',
         \   highlight_window: 'Normal',
         \   row: &lines / 2,
+        \   title: '',
+        \   title_pos: 'left',
         \   width: 80,
         \   zindex: 1000,
         \ }
@@ -117,6 +119,12 @@ function cmdline#enable() abort
           \   zindex: options.zindex,
           \ }
 
+    " NOTE: "title" and "title_pos" needs neovim 0.9.0+
+    if has('nvim-0.9.0')
+      let winopts.title = options.title
+      let winopts.title_pos = options.title_pos
+    endif
+
     if cmdline.id > 0
       " Reuse window
       call nvim_win_set_config(cmdline.id, winopts)
@@ -165,6 +173,7 @@ function cmdline#enable() abort
           \   highlight: options.highlight_window,
           \   maxheight: 1,
           \   minwidth: options.width,
+          \   title: options.title,
           \   wrap: v:true,
           \   zindex: options.zindex,
           \ }

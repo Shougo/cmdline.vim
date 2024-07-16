@@ -38,14 +38,14 @@ OPTIONS                                                      *cmdline-options*
 
 Options can be toggled through the use of |cmdline#set_option()|.
 
-                                                       *cmdline-options-blend*
+                                                        *cmdline-option-blend*
 blend
 		Specify 'winblend' option value.
 		NOTE: neovim only feature.
 
 		Default: 'pumblend' value
 
-                                                      *cmdline-options-border*
+                                                       *cmdline-option-border*
 border
 		The completion window border.
 		See |nvim_open_win()| or |popup_create-arguments| for the
@@ -63,13 +63,13 @@ border
 
 		Default: "single"
 
-                                                         *cmdline-options-col*
+                                                          *cmdline-option-col*
 col
 		Floating window column.
 
 		Default: (&columns - 80) / 2 - 10
 
-                                            *cmdline-options-highlight_cursor*
+                                             *cmdline-option-highlight_cursor*
 highlight_cursor
 		The highlight of the cursor.
 		NOTE: It cannot use |hl-Cursor| highlight. Because it is
@@ -77,32 +77,48 @@ highlight_cursor
 
 		Default: "lCursor"
 
-                                            *cmdline-options-highlight_prompt*
+                                             *cmdline-option-highlight_prompt*
 highlight_prompt
 		The highlight of the |input()| prompt.
 		NOTE: It is available for |cmdline#input()|.
 
 		Default: "Question"
 
-                                            *cmdline-options-highlight_window*
+                                             *cmdline-option-highlight_window*
 highlight_window
 		The highlight of the floating window.
 
 		Default: "Normal"
 
-                                                         *cmdline-options-row*
+                                                          *cmdline-option-row*
 row
 		Floating window row.
 
 		Default: &lines / 2
 
-                                                       *cmdline-options-width*
+                                                        *cmdline-option-title*
+title		(string | list)
+		Specify the title of the window border if
+		|cmdline-option-border| is not "none".
+
+		Default: ""
+
+                                                    *cmdline-option-title_pos*
+title_pos	(string)
+		Specify the title position of the window border if
+		|cmdline-option-border| is not "none".
+		See |nvim_open_win()| for the detail.
+		NOTE: It is neovim only.
+
+		Default: "left"
+
+                                                        *cmdline-option-width*
 width
 		Floating window width.
 
 		Default: 80
 
-                                                      *cmdline-options-zindex*
+                                                       *cmdline-option-zindex*
 zindex
 		Floating window z-index.
 

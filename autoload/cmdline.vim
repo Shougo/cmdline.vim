@@ -321,7 +321,7 @@ endfunction
 
 function s:set_float_window_options(id, options) abort
   const highlight_border =
-        \   a:options['highlight_border'] ==# ''
+        \   a:options['highlight_border'] !=# ''
         \ ? a:options['highlight_border']
         \ : 'FloatBorder'
 

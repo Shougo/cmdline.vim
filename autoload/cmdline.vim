@@ -320,8 +320,13 @@ function s:redraw_cmdline() abort
 endfunction
 
 function s:set_float_window_options(id, options) abort
+  const highlight_border =
+        \   a:options['highlight_border'] ==# ''
+        \ ? a:options['highlight_border']
+        \ : 'FloatBorder'
+
   let highlight   = 'NormalFloat:' .. a:options['highlight_window']
-  let highlight ..= ',FloatBorder:' .. a:options['highlight_border']
+  let highlight ..= ',FloatBorder:' .. highlight_border
   let highlight ..= ',CursorLine:Visual'
   if &hlsearch
     " Disable 'hlsearch' highlight

@@ -69,6 +69,12 @@ col
 
 		Default: (&columns - 80) / 2 - 10
 
+                                             *cmdline-option-highlight_border*
+highlight_border
+		The highlight of the border.
+
+		Default: ''
+
                                              *cmdline-option-highlight_cursor*
 highlight_cursor
 		The highlight of the cursor.

@@ -26,6 +26,7 @@ function cmdline#_init_options() abort
         \   blend: '+pumblend'->exists() ? &pumblend : 0,
         \   border: 'single',
         \   col: (&columns - 80) / 2 - 10,
+        \   highlight_border: '',
         \   highlight_cursor: 'lCursor',
         \   highlight_prompt: 'Question',
         \   highlight_window: 'Normal',
@@ -137,7 +138,7 @@ function cmdline#enable() abort
       " Create new window
       const id = nvim_open_win(cmdline.buf, v:false, winopts)
 
-      call s:set_float_window_options(id, options, 'window')
+      call s:set_float_window_options(id, options)
 
       let cmdline.id = id
     endif
@@ -170,6 +171,7 @@ function cmdline#enable() abort
           \   pos: 'topleft',
           \   line: options.row + 1,
           \   col: options.col + 1,
+          \   borderhighlight: [options.highlight_border],
           \   highlight: options.highlight_window,
           \   maxheight: 1,
           \   minwidth: options.width,
@@ -317,9 +319,10 @@ function s:redraw_cmdline() abort
   redraw
 endfunction
 
-function s:set_float_window_options(id, options, highlight) abort
-  let highlight = 'NormalFloat:' .. a:options['highlight_' .. a:highlight]
-  let highlight ..= ',FloatBorder:FloatBorder,CursorLine:Visual'
+function s:set_float_window_options(id, options) abort
+  let highlight   = 'NormalFloat:' .. a:options['highlight_window']
+  let highlight ..= ',FloatBorder:' .. a:options['highlight_border']
+  let highlight ..= ',CursorLine:Visual'
   if &hlsearch
     " Disable 'hlsearch' highlight
     let highlight ..= ',Search:None,CurSearch:None'

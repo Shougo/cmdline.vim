@@ -165,18 +165,31 @@ EXAMPLES                                                    *cmdline-examples*
 FREQUENTLY ASKED QUESTIONS (FAQ)                                 *cmdline-faq*
 
 FAQ 1:                                                         |cmdline-faq-1|
-	I want to enable cmdline.vim when |:| is pressed.
+	I want to enable cmdline.vim when ":" is pressed.
+
+FAQ 2:                                                         |cmdline-faq-2|
+	I cannot hide the original command line input when use transparent
+	colorscheme.
 
 ------------------------------------------------------------------------------
 
                                                                *cmdline-faq-1*
-I want to enable cmdline.vim when |:| is pressed.
+Q: I want to enable cmdline.vim when ":" is pressed.
 
-You can configure mapping like this. >
+A: You can configure mapping like this. >
 	nnoremap :  <Cmd>call cmdline#enable()<CR>:
 
 NOTE:  You can use |CmdlineEnter| autocmd like this, but it is dangerous. >
 	autocmd CmdlineEnter * call cmdline#enable()	
+<
+                                                               *cmdline-faq-2*
+Q: I cannot hide the original command line input when use transparent
+colorscheme.
+
+A: You cannot.  Because cmdline.vim hide the original command line by the
+background color.  But transparent colorscheme does not define the background
+color.
+
 
 ==============================================================================
 COMPATIBILITY                                          *cmdline-compatibility*

@@ -100,6 +100,8 @@ function cmdline#enable() abort
         \ nvim_get_hl(0, #{ name: 'MsgArea'}) : 'MsgArea'->hlget()
   const hl_cursor = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'Cursor'}) : 'Cursor'->hlget()
+  const hl_none = has('nvim') ?
+        \ nvim_get_hl(0, #{ name: 'None'}) : 'None'->hlget()
 
   if has('nvim')
     if cmdline.buf < 0
@@ -148,15 +150,15 @@ function cmdline#enable() abort
       let hidden_base.fg = hidden_base.bg
     else
       " For transparency
-      let hidden_base.fg = 0
-      let hidden_base.bg = 0
+      let hidden_base.fg = 'NONE'
+      let hidden_base.bg = 'NONE'
     endif
     if hidden_base->has_key('ctermbg')
       let hidden_base.ctermfg = hidden_base.ctermbg
     else
       " For transparency
-      let hidden_base.ctermfg = 0
-      let hidden_base.ctermbg = 0
+      let hidden_base.ctermfg = 'NONE'
+      let hidden_base.ctermbg = 'NONE'
     endif
 
     " NOTE: Disable cursor

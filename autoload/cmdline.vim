@@ -214,9 +214,11 @@ function cmdline#enable() abort
 
     let hidden_msgarea = hidden_base->copy()
     let hidden_msgarea.name = 'MsgArea'
+    let hidden_msgarea.force = v:true
 
     let hidden_cursor = hidden_base->copy()
     let hidden_cursor.name = 'Cursor'
+    let hidden_cursor.force = v:true
 
     call hlset([
           \   hidden_msgarea,
@@ -262,6 +264,10 @@ function cmdline#_close() abort
     " NOTE: prop_remove() is not needed.
     " popup_close() removes the buffer.
     call popup_close(cmdline.id)
+
+    " force flag is needed to overwrite
+    let cmdline.hl_msg.force = v:true
+    let cmdline.hl_cursor.force = v:true
 
     call hlset(cmdline.hl_msg + cmdline.hl_cursor)
 

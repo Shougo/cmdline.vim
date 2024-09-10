@@ -94,13 +94,13 @@ function cmdline#enable() abort
 
   const text = printf('%s %s', cmdline.prompt, getcmdline())
 
-  const hl_normal = has('nvim') ?
+  let hl_normal = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'Normal'}) : 'Normal'->hlget()
-  const hl_msg = has('nvim') ?
+  let hl_msg = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'MsgArea'}) : 'MsgArea'->hlget()
-  const hl_cursor = has('nvim') ?
+  let hl_cursor = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'Cursor'}) : 'Cursor'->hlget()
-  const hl_none = has('nvim') ?
+  let hl_none = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'None'}) : 'None'->hlget()
 
   if has('nvim')
@@ -266,8 +266,9 @@ function cmdline#_close() abort
     call popup_close(cmdline.id)
 
     " force flag is needed to overwrite
-    let cmdline.hl_msg.force = v:true
-    let cmdline.hl_cursor.force = v:true
+    for hl in cmdline.hl_msg + cmdline.hl_cursor
+      let hl.force = v:true
+    endfor
 
     call hlset(cmdline.hl_msg + cmdline.hl_cursor)
 

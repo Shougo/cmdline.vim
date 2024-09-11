@@ -290,6 +290,10 @@ function s:redraw_cmdline() abort
     return
   endif
 
+  if exists('*getcmdmsg')
+    " Use getcmdmsg() as prompt
+    let cmdline.prompt = getcmdmsg()
+  endif
   const text = printf('%s %s ', cmdline.prompt, getcmdline())
 
   call setbufline(cmdline.buf, 1, text)

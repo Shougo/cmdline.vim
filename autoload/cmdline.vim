@@ -290,9 +290,9 @@ function s:redraw_cmdline() abort
     return
   endif
 
-  if exists('*getcmdmsg')
-    " Use getcmdmsg() as prompt
-    let cmdline.prompt = getcmdmsg()
+  if exists('*getcmdprompt')
+    " Use getcmdprompt() as prompt
+    let cmdline.prompt = getcmdprompt()
   endif
   const text = printf('%s %s ', cmdline.prompt, getcmdline())
 

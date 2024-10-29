@@ -77,7 +77,7 @@ function cmdline#input(
 
   const input = a:prompt->input(a:text, a:completion)
 
-  call cmdline#_close()
+  call cmdline#disable()
 
   return input
 endfunction
@@ -132,7 +132,7 @@ function cmdline#enable() abort
       " Reuse window
       call nvim_win_set_config(cmdline.id, winopts)
     else
-      call cmdline#_close()
+      call cmdline#disable()
 
       " NOTE: It cannot set in nvim_win_set_config()
       let winopts.noautocmd = v:true
@@ -232,7 +232,7 @@ function cmdline#enable() abort
 
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
-    autocmd CmdlineLeave,VimLeavePre * ++nested call cmdline#_close()
+    autocmd CmdlineLeave,VimLeavePre * ++nested call cmdline#disable()
   augroup END
 
   if '##CursorMovedC'->exists()
@@ -247,7 +247,7 @@ function cmdline#_dummy(arglead, cmdline, cursor) abort
   return ''
 endfunction
 
-function cmdline#_close() abort
+function cmdline#disable() abort
   let cmdline = cmdline#_get()
   if cmdline.id < 0
     return
@@ -282,6 +282,9 @@ function cmdline#_close() abort
   augroup cmdline
     autocmd!
   augroup END
+
+  " NOTE: redraw is needed
+  redraw
 endfunction
 
 function s:redraw_cmdline() abort

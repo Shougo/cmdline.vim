@@ -133,9 +133,14 @@ zindex
 ------------------------------------------------------------------------------
 FUNCTIONS                                                  *cmdline-functions*
 
+                                                           *cmdline#disable()*
+cmdline#disable()
+		Disable cmdline handler and window.
+
                                                             *cmdline#enable()*
 cmdline#enable()
-		Enable cmdline handler.  It is enabled when |CmdlineEnter|.
+		Enable cmdline handler and window.  It is enabled when
+		|CmdlineEnter|.
 		NOTE: It is disabled when |CmdlineLeave|.
 
                                                              *cmdline#input()*
@@ -180,7 +185,7 @@ A: You can configure mapping like this. >
 	nnoremap :  <Cmd>call cmdline#enable()<CR>:
 
 NOTE:  You can use |CmdlineEnter| autocmd like this, but it is dangerous. >
-	autocmd CmdlineEnter * call cmdline#enable()	
+	autocmd CmdlineEnter * call cmdline#enable()
 <
                                                                *cmdline-faq-2*
 Q: I cannot hide the original command line input when use transparent

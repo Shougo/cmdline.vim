@@ -178,7 +178,7 @@ function cmdline#enable() abort
           \   maxheight: 1,
           \   minwidth: options.width,
           \   title: options.title,
-          \   wrap: v:true,
+          \   wrap: v:false,
           \   zindex: options.zindex,
           \ }
 
@@ -254,7 +254,7 @@ function cmdline#disable() abort
   endif
 
   if has('nvim')
-    call nvim_win_close(cmdline.id, v:true)
+    silent! call nvim_win_close(cmdline.id, v:true)
 
     call nvim_set_hl(0, 'MsgArea', cmdline.hl_msg)
     call nvim_set_hl(0, 'Cursor', cmdline.hl_cursor)
@@ -263,7 +263,7 @@ function cmdline#disable() abort
   else
     " NOTE: prop_remove() is not needed.
     " popup_close() removes the buffer.
-    call popup_close(cmdline.id)
+    silent! call popup_close(cmdline.id)
 
     " force flag is needed to overwrite
     for hl in cmdline.hl_msg + cmdline.hl_cursor
@@ -298,6 +298,12 @@ function s:redraw_cmdline() abort
     let cmdline.prompt = getcmdprompt()
   endif
   const text = printf('%s %s ', cmdline.prompt, getcmdline())
+
+  if cmdline.pos[1] + text->strdisplaywidth() > &columns
+    " Too long command line
+    call cmdline#disable()
+    return
+  endif
 
   call setbufline(cmdline.buf, 1, text)
 
@@ -351,7 +357,7 @@ function s:set_float_window_options(id, options) abort
 
   call setwinvar(a:id, '&winhighlight', highlight)
   call setwinvar(a:id, '&winblend', a:options.blend)
-  call setwinvar(a:id, '&wrap', v:true)
+  call setwinvar(a:id, '&wrap', v:false)
   call setwinvar(a:id, '&scrolloff', 0)
 endfunction
 

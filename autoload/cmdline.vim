@@ -89,6 +89,11 @@ function cmdline#enable() abort
     return -1
   endif
 
+  if !has('nvim') && win_gettype() ==# 'popup'
+    " In Vim, popup window cannot be closed in popup.
+    return -1
+  endif
+
   let cmdline = cmdline#_get()
   let options = cmdline#_options()
 
@@ -253,18 +258,14 @@ function cmdline#disable() abort
     return
   endif
 
-  if has('nvim')
-    silent! call nvim_win_close(cmdline.id, v:true)
+  call s:close_popup(cmdline.id)
 
+  if has('nvim')
     call nvim_set_hl(0, 'MsgArea', cmdline.hl_msg)
     call nvim_set_hl(0, 'Cursor', cmdline.hl_cursor)
 
     let &guicursor = cmdline.guicursor
   else
-    " NOTE: prop_remove() is not needed.
-    " popup_close() removes the buffer.
-    silent! call popup_close(cmdline.id)
-
     " force flag is needed to overwrite
     for hl in cmdline.hl_msg + cmdline.hl_cursor
       let hl.force = v:true
@@ -339,6 +340,25 @@ function s:redraw_cmdline() abort
 
   " NOTE: ":redraw" is needed to update screen in command line.
   redraw
+endfunction
+
+function! s:close_popup(id) abort
+  try
+    if has('nvim')
+      call nvim_win_close(a:id, v:true)
+    else
+      " NOTE: prop_remove() is not needed.
+      " popup_close() removes the buffer.
+      call popup_close(a:id)
+    endif
+
+    redraw
+  catch /E523:\|E565:\|E5555:\|E994:/
+    " Ignore "Not allowed here"
+
+    " Close the popup window later
+    call timer_start(100, { -> s:close_popup(a:id) })
+  endtry
 endfunction
 
 function s:set_float_window_options(id, options) abort

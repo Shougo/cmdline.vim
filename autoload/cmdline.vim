@@ -89,11 +89,6 @@ function cmdline#enable() abort
     return -1
   endif
 
-  if !has('nvim') && win_gettype() ==# 'popup'
-    " In Vim, popup window cannot be closed in popup.
-    return -1
-  endif
-
   let cmdline = cmdline#_get()
   let options = cmdline#_options()
 

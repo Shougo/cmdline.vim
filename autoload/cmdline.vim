@@ -83,9 +83,9 @@ function cmdline#input(
 endfunction
 
 function cmdline#enable() abort
-  if !has('patch-9.0.1276') && !has('nvim-0.8')
+  if !has('patch-9.1.0448') && !has('nvim-0.10')
     call cmdline#_print_error(
-          \ 'cmdline.vim requires Vim 9.0.1276+ or neovim 0.8.0+.')
+          \ 'cmdline.vim requires Vim 9.1.0448+ or neovim 0.10.0+.')
     return -1
   endif
 
@@ -121,12 +121,6 @@ function cmdline#enable() abort
           \   style: 'minimal',
           \   zindex: options.zindex,
           \ }
-
-    " NOTE: "title" and "title_pos" needs neovim 0.9.0+
-    if has('nvim-0.9.0')
-      let winopts.title = options.title
-      let winopts.title_pos = options.title_pos
-    endif
 
     if cmdline.id > 0
       " Reuse window

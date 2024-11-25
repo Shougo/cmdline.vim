@@ -25,7 +25,7 @@ INTRODUCTION                                            *cmdline-introduction*
 ==============================================================================
 INSTALL                                                      *cmdline-install*
 
-NOTE: cmdline.vim requires Neovim (0.8.0+) or Vim 9.0.1276+ (latest is
+NOTE: cmdline.vim requires Vim 9.1.0448+ or Neovim 0.10.0+ (latest is
 recommended).
 
 NOTE: You need to set 'guicursor' option to hide cursor.

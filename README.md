@@ -21,8 +21,7 @@ cmdline.vim displays command line in floating window.
 
 ## Install
 
-**Note:** cmdline.vim requires Neovim (0.8.0+ and of course, **latest** is
-recommended) or Vim 9.0.1276+.
+**Note:** cmdline.vim requires Vim 9.1.0448+ or Neovim 0.10.0+.
 
 
 ## Configuration

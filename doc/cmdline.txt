@@ -41,7 +41,7 @@ Options can be toggled through the use of |cmdline#set_option()|.
                                                         *cmdline-option-blend*
 blend
 		Specify 'winblend' option value.
-		NOTE: neovim only feature.
+		NOTE: Neovim only.
 
 		Default: 'pumblend' value
 
@@ -56,9 +56,9 @@ border
 		"none": Disabled.
 		"single": A single line box.
 		"double": A double line box.
-		"rounded": neovim only.
-		"solid": neovim only.
-		"shadow": neovim only.
+		"rounded": Neovim only.
+		"solid": Neovim only.
+		"shadow": Neovim only.
 		array: Specifify the eight chars building up the border.
 
 		Default: "single"
@@ -114,7 +114,7 @@ title_pos	(string)
 		Specify the title position of the window border if
 		|cmdline-option-border| is not "none".
 		See |nvim_open_win()| for the detail.
-		NOTE: It is neovim only.
+		NOTE: It is Neovim only.
 
 		Default: "left"
 
@@ -149,6 +149,14 @@ cmdline#input({prompt} [, {text} [, {completion}]])
 		It can replace normal |input()|.
 		Please see |input()| for args.
 		NOTE: It does not support |:echohl|.
+
+                                                        *cmdline#input_opts()*
+cmdline#input_opts({opts})
+		Call |input()| with |cmdline#enable()|.
+		It can replace normal |input()|.
+		Please see |input()| for args.
+		NOTE: It does not support |:echohl|.
+		NOTE: It is Neovim only.
 
                                                         *cmdline#set_option()*
 cmdline#set_option({option-name}, {value})

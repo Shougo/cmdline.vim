@@ -81,6 +81,25 @@ function cmdline#input(
 
   return input
 endfunction
+function cmdline#input_opts(opts) abort
+  let cmdline = cmdline#_get()
+  let cmdline.prompt = a:opts.prompt
+
+  if cmdline#enable() || !has('nvim')
+    return ''
+  endif
+
+  if !has('nvim')
+    " NOTE: Only Neovim supports opts argument
+    return cmdline#input(a:opts.prompt, a:opts.default, a:opts.completion)
+  endif
+
+  const input = input(a:opts)
+
+  call cmdline#disable()
+
+  return input
+endfunction
 
 function cmdline#enable() abort
   if !has('patch-9.1.0448') && !has('nvim-0.10')

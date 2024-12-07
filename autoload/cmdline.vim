@@ -68,12 +68,12 @@ endfunction
 function cmdline#input(
       \ prompt='', text='', completion='custom,cmdline#_dummy') abort
 
-  let cmdline = cmdline#_get()
-  let cmdline.prompt = a:prompt
-
   if cmdline#enable()
     return ''
   endif
+
+  let cmdline = cmdline#_get()
+  let cmdline.prompt = a:prompt
 
   const input = a:prompt->input(a:text, a:completion)
 
@@ -82,17 +82,17 @@ function cmdline#input(
   return input
 endfunction
 function cmdline#input_opts(opts) abort
-  let cmdline = cmdline#_get()
-  let cmdline.prompt = a:opts.prompt
-
-  if cmdline#enable() || !has('nvim')
-    return ''
-  endif
-
   if !has('nvim')
     " NOTE: Only Neovim supports opts argument
     return cmdline#input(a:opts.prompt, a:opts.default, a:opts.completion)
   endif
+
+  if cmdline#enable()
+    return ''
+  endif
+
+  let cmdline = cmdline#_get()
+  let cmdline.prompt = a:opts.prompt
 
   const input = input(a:opts)
 
@@ -225,6 +225,7 @@ function cmdline#enable() abort
       let hidden_base.ctermfg = hidden_base.guibg
     endif
 
+    " force flag is needed to overwrite
     let hidden_msgarea = hidden_base->copy()
     let hidden_msgarea.name = 'MsgArea'
     let hidden_msgarea.force = v:true
@@ -274,11 +275,6 @@ function cmdline#disable() abort
 
     let &guicursor = cmdline.guicursor
   else
-    " force flag is needed to overwrite
-    for hl in cmdline.hl_msg + cmdline.hl_cursor
-      let hl.force = v:true
-    endfor
-
     call hlset(cmdline.hl_msg + cmdline.hl_cursor)
 
     let &t_ve = cmdline.t_ve
@@ -377,7 +373,6 @@ function s:set_float_window_options(id, options) abort
 
   let highlight   = 'NormalFloat:' .. a:options['highlight_window']
   let highlight ..= ',FloatBorder:' .. highlight_border
-  let highlight ..= ',CursorLine:Visual'
   if &hlsearch
     " Disable 'hlsearch' highlight
     let highlight ..= ',Search:None,CurSearch:None'
@@ -387,6 +382,7 @@ function s:set_float_window_options(id, options) abort
   call setwinvar(a:id, '&winblend', a:options.blend)
   call setwinvar(a:id, '&wrap', v:false)
   call setwinvar(a:id, '&scrolloff', 0)
+  call setwinvar(a:id, '&cursorline', v:false)
 endfunction
 
 function cmdline#_print_error(string, name = 'cmdline') abort

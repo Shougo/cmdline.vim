@@ -167,7 +167,7 @@ cmdline#set_option({dict})
 
 ==============================================================================
 EXAMPLES                                                    *cmdline-examples*
->
+>vim
 	call cmdline#set_option(#{
 	  \   highlight_prompt: 'Statement',
 	  \   highlight_window: 'None',
@@ -189,10 +189,10 @@ FAQ 2:                                                         |cmdline-faq-2|
                                                                *cmdline-faq-1*
 Q: I want to enable cmdline.vim when ":" is pressed.
 
-A: You can configure mapping like this. >
+A: You can configure mapping like this. >vim
 	nnoremap :  <Cmd>call cmdline#enable()<CR>:
 
-NOTE:  You can use |CmdlineEnter| autocmd like this, but it is dangerous. >
+NOTE:  You can use |CmdlineEnter| autocmd like this, but it is dangerous. >vim
 	autocmd CmdlineEnter * call cmdline#enable()
 <
                                                                *cmdline-faq-2*

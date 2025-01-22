@@ -23,7 +23,6 @@ cmdline.vim displays command line in floating window.
 
 **Note:** cmdline.vim requires Vim 9.1.0448+ or Neovim 0.10.0+.
 
-
 ## Configuration
 
 ```vim

@@ -383,6 +383,7 @@ function s:set_float_window_options(id, options) abort
   call setwinvar(a:id, '&wrap', v:false)
   call setwinvar(a:id, '&scrolloff', 0)
   call setwinvar(a:id, '&cursorline', v:false)
+  call setwinvar(a:id, '&list', v:false)
 endfunction
 
 function cmdline#_print_error(string, name = 'cmdline') abort

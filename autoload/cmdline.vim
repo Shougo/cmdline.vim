@@ -138,6 +138,8 @@ function cmdline#enable() abort
           \   col: options.col,
           \   anchor: 'NW',
           \   style: 'minimal',
+          \   title: options.title,
+          \   title_pos: options.title_pos,
           \   zindex: options.zindex,
           \ }
 

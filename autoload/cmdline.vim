@@ -288,8 +288,8 @@ function cmdline#disable() abort
     autocmd!
   augroup END
 
-  " NOTE: redraw is needed
-  redraw
+  " NOTE: Clear command line
+  redraw | echo ''
 endfunction
 
 function s:redraw_cmdline() abort

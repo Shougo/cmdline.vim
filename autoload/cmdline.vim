@@ -30,6 +30,7 @@ function cmdline#_init_options() abort
         \   highlight_cursor: 'lCursor',
         \   highlight_prompt: 'Question',
         \   highlight_window: 'Normal',
+        \   pos: has('nvim') ? 'editor' : 'topleft',
         \   row: &lines / 2,
         \   title: '',
         \   title_pos: 'left',
@@ -131,7 +132,7 @@ function cmdline#enable() abort
 
     let winopts = #{
           \   border: options.border,
-          \   relative: 'editor',
+          \   relative: options.pos,
           \   width: [text->strwidth(), options.width]->max(),
           \   height: 1,
           \   row: options.row,
@@ -185,7 +186,7 @@ function cmdline#enable() abort
     call nvim_set_hl(0, 'Cursor', hidden_base)
   else
     let winopts = #{
-          \   pos: 'topleft',
+          \   pos: options.pos,
           \   line: options.row + 1,
           \   col: options.col + 1,
           \   borderhighlight: [options.highlight_border],

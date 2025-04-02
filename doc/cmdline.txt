@@ -96,6 +96,14 @@ highlight_window
 
 		Default: "Normal"
 
+                                                          *cmdline-option-pos*
+pos		(string)
+		Specify the window position.
+
+		Default:
+		"topleft" (Vim)
+		"editor" (Neovim)
+
                                                           *cmdline-option-row*
 row
 		Floating window row.

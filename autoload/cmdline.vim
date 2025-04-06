@@ -1,7 +1,7 @@
 let g:cmdline#_namespace = has('nvim') ? nvim_create_namespace('cmdline') : 0
 
-const s:priority_highlight_prompt = 0
-const s:priority_highlight_cursor = 1
+let s:priority_highlight_prompt = 0
+let s:priority_highlight_cursor = 1
 
 function cmdline#_get() abort
   if !'s:cmdline'->exists()
@@ -35,7 +35,7 @@ function cmdline#_init_options() abort
         \   title: '',
         \   title_pos: 'left',
         \   width: 80,
-        \   zindex: 1000,
+        \   zindex: 100,
         \ }
 endfunction
 function cmdline#_options() abort
@@ -441,7 +441,7 @@ endfunction
 
 function s:overwrite_highlight(
       \ highlight, prop_type, id, priority, row, col, length) abort
-  call s:clear_highlight(a:prop_type, a:id)
+  silent! call s:clear_highlight(a:prop_type, a:id)
   call s:highlight(
         \ a:highlight, a:prop_type, a:priority, a:row, a:col, a:length)
 endfunction

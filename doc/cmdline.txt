@@ -136,7 +136,7 @@ width
 zindex
 		Floating window z-index.
 
-		Default: 1000
+		Default: 100
 
 ------------------------------------------------------------------------------
 FUNCTIONS                                                  *cmdline-functions*

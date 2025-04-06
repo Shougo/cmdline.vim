@@ -256,7 +256,8 @@ function s:redraw_cmdline() abort
     return
   endif
 
-  if exists('*getcmdprompt')
+  let cmdline.prompt = getcmdtype()
+  if exists('*getcmdprompt') && getcmdprompt() !=# ''
     " Use getcmdprompt() as prompt
     let cmdline.prompt = getcmdprompt()
   endif

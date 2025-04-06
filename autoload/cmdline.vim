@@ -114,8 +114,6 @@ function cmdline#enable() abort
 
   const text = printf('%s %s', cmdline.prompt, getcmdline())
 
-  let hl_normal = has('nvim') ?
-        \ nvim_get_hl(0, #{ name: 'Normal'}) : 'Normal'->hlget()
   let hl_msg = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'MsgArea'}) : 'MsgArea'->hlget()
   let hl_cursor = has('nvim') ?
@@ -161,29 +159,7 @@ function cmdline#enable() abort
       let cmdline.id = id
     endif
 
-    let hidden_base = hl_normal->copy()
-    if hidden_base->has_key('bg')
-      let hidden_base.fg = hidden_base.bg
-    else
-      " For transparency
-      let hidden_base.fg = 'NONE'
-      let hidden_base.bg = 'NONE'
-    endif
-    if hidden_base->has_key('ctermbg')
-      let hidden_base.ctermfg = hidden_base.ctermbg
-    else
-      " For transparency
-      let hidden_base.ctermfg = 'NONE'
-      let hidden_base.ctermbg = 'NONE'
-    endif
-
-    " NOTE: Disable cursor
     let cmdline.guicursor = &guicursor
-    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,
-          \i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
-
-    call nvim_set_hl(0, 'MsgArea', hidden_base)
-    call nvim_set_hl(0, 'Cursor', hidden_base)
   else
     let winopts = #{
           \   pos: options.pos,
@@ -216,32 +192,11 @@ function cmdline#enable() abort
       let cmdline.buf = cmdline.id->winbufnr()
     endif
 
-    " NOTE: Disable cursor
     let cmdline.t_ve = &t_ve
-    set t_ve=
-
-    let hidden_base = hl_normal[0]->copy()
-    if hidden_base->has_key('guifg')
-      let hidden_base.guifg = hidden_base.guibg
-    endif
-    if hidden_base->has_key('ctermfg')
-      let hidden_base.ctermfg = hidden_base.guibg
-    endif
-
-    " force flag is needed to overwrite
-    let hidden_msgarea = hidden_base->copy()
-    let hidden_msgarea.name = 'MsgArea'
-    let hidden_msgarea.force = v:true
-
-    let hidden_cursor = hidden_base->copy()
-    let hidden_cursor.name = 'Cursor'
-    let hidden_cursor.force = v:true
-
-    call hlset([
-          \   hidden_msgarea,
-          \   hidden_cursor,
-          \ ])
   endif
+
+  " NOTE: Disable cursor
+  call s:hidden_cursor()
 
   let cmdline.pos = [options.row, options.col]
   let cmdline.hl_msg = hl_msg
@@ -345,6 +300,17 @@ function s:redraw_cmdline() abort
           \ 1, 1, cmdline.prompt->strlen())
   endif
 
+  if getcmdtype() ==# ':' && getbufvar(cmdline.buf, "&filetype") ==# ''
+    call setbufvar(cmdline.buf, "&filetype", "vim")
+    if has('nvim')
+      call win_execute(cmdline.id, 'lua vim.treesitter.start()')
+    else
+      call win_execute(cmdline.id, 'syntax enable')
+      " NOTE: "syntax enable" restores cursor. Why?
+      call s:hidden_cursor()
+    endif
+  endif
+
   " NOTE: ":redraw" is needed to update screen in command line.
   redraw
 endfunction
@@ -441,7 +407,66 @@ endfunction
 
 function s:overwrite_highlight(
       \ highlight, prop_type, id, priority, row, col, length) abort
-  silent! call s:clear_highlight(a:prop_type, a:id)
+  let cmdline = cmdline#_get()
+  if !cmdline.buf->bufexists()
+    return
+  endif
+
+  call s:clear_highlight(a:prop_type, a:id)
   call s:highlight(
         \ a:highlight, a:prop_type, a:priority, a:row, a:col, a:length)
+endfunction
+
+function s:hidden_cursor()
+  const hl_normal = has('nvim') ?
+        \ nvim_get_hl(0, #{ name: 'Normal'}) : 'Normal'->hlget()
+
+  if has('nvim')
+    let hidden_base = hl_normal->copy()
+    if hidden_base->has_key('bg')
+      let hidden_base.fg = hidden_base.bg
+    else
+      " For transparency
+      let hidden_base.fg = 'NONE'
+      let hidden_base.bg = 'NONE'
+    endif
+    if hidden_base->has_key('ctermbg')
+      let hidden_base.ctermfg = hidden_base.ctermbg
+    else
+      " For transparency
+      let hidden_base.ctermfg = 'NONE'
+      let hidden_base.ctermbg = 'NONE'
+    endif
+
+    " NOTE: Disable cursor
+    set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,
+          \i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+
+    call nvim_set_hl(0, 'MsgArea', hidden_base)
+    call nvim_set_hl(0, 'Cursor', hidden_base)
+  else
+    set t_ve=
+
+    let hidden_base = hl_normal[0]->copy()
+    if hidden_base->has_key('guifg')
+      let hidden_base.guifg = hidden_base.guibg
+    endif
+    if hidden_base->has_key('ctermfg')
+      let hidden_base.ctermfg = hidden_base.guibg
+    endif
+
+    " force flag is needed to overwrite
+    let hidden_msgarea = hidden_base->copy()
+    let hidden_msgarea.name = 'MsgArea'
+    let hidden_msgarea.force = v:true
+
+    let hidden_cursor = hidden_base->copy()
+    let hidden_cursor.name = 'Cursor'
+    let hidden_cursor.force = v:true
+
+    call hlset([
+          \   hidden_msgarea,
+          \   hidden_cursor,
+          \ ])
+  endif
 endfunction

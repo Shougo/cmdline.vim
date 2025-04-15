@@ -233,6 +233,8 @@ function cmdline#disable() abort
 
     let &guicursor = cmdline.guicursor
   else
+    hi clear MsgArea
+    hi clear Cursor
     call hlset(cmdline.hl_msg + cmdline.hl_cursor)
 
     let &t_ve = cmdline.t_ve
@@ -449,11 +451,11 @@ function s:hidden_cursor()
     set t_ve=
 
     let hidden_base = hl_normal[0]->copy()
-    if hidden_base->has_key('guifg')
+    if hidden_base->has_key('guibg')
       let hidden_base.guifg = hidden_base.guibg
     endif
-    if hidden_base->has_key('ctermfg')
-      let hidden_base.ctermfg = hidden_base.guibg
+    if hidden_base->has_key('ctermbg')
+      let hidden_base.ctermfg = hidden_base.ctermbg
     endif
 
     " force flag is needed to overwrite

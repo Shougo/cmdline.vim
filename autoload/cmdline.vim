@@ -204,7 +204,9 @@ function cmdline#enable() abort
 
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
-    autocmd CmdlineLeave,VimLeavePre * ++nested call cmdline#disable()
+    " NOTE: CmdlineLeave is also triggered on `<C-r>=`.
+    autocmd ModeChanged c:[^c] ++nested call cmdline#disable()
+    autocmd VimLeavePre * ++nested call cmdline#disable()
   augroup END
 
   if '##CursorMovedC'->exists()

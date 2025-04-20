@@ -76,7 +76,12 @@ function cmdline#input(
   let cmdline = cmdline#_get()
   let cmdline.prompt = a:prompt
 
-  const input = a:prompt->input(a:text, a:completion)
+  let input = ''
+  try
+    let input = a:prompt->input(a:text, a:completion)
+  catch
+    call cmdline#_print_error(v:exception)
+  endtry
 
   call cmdline#disable()
 
@@ -95,7 +100,12 @@ function cmdline#input_opts(opts) abort
   let cmdline = cmdline#_get()
   let cmdline.prompt = a:opts.prompt
 
-  const input = input(a:opts)
+  let input = ''
+  try
+    let input = input(a:opts)
+  catch
+    call cmdline#_print_error(v:exception)
+  endtry
 
   call cmdline#disable()
 
@@ -205,7 +215,7 @@ function cmdline#enable() abort
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
     " NOTE: CmdlineLeave is also triggered on `<C-r>=`.
-    autocmd ModeChanged c:[^c] ++nested call cmdline#disable()
+    autocmd CmdlineLeave * ++nested call cmdline#disable()
     autocmd VimLeavePre * ++nested call cmdline#disable()
   augroup END
 
@@ -223,7 +233,7 @@ endfunction
 
 function cmdline#disable() abort
   let cmdline = cmdline#_get()
-  if cmdline.id < 0
+  if cmdline.id < 0 || mode() ==# 'c'
     return
   endif
 

@@ -241,7 +241,7 @@ endfunction
 
 function cmdline#disable() abort
   let cmdline = cmdline#_get()
-  if cmdline.id < 0 || mode() ==# 'c'
+  if cmdline.id < 0 || getcmdtype() ==# '='
     return
   endif
 

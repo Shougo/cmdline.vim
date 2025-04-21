@@ -27,7 +27,6 @@ function cmdline#_init_options() abort
         \   border: 'single',
         \   col: (&columns - 80) / 2 - 10,
         \   highlight_border: '',
-        \   highlight_cursor: 'lCursor',
         \   highlight_prompt: 'Question',
         \   highlight_window: 'Normal',
         \   pos: has('nvim') ? 'editor' : 'topleft',
@@ -212,6 +211,15 @@ function cmdline#enable() abort
   let cmdline.hl_msg = hl_msg
   let cmdline.hl_cursor = hl_cursor
 
+  " Set CmdlineCursor highlight instead
+  if has('nvim')
+    call nvim_set_hl(0, 'CmdlineCursor', cmdline.hl_cursor)
+  else
+    let hl_cursor = cmdline.hl_cursor->copy()
+    let hl_cursor.name = 'CmdlineCursor'
+    call hlset(hl_cursor)
+  endif
+
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
     " NOTE: CmdlineLeave is also triggered on `<C-r>=`.
@@ -299,7 +307,7 @@ function s:redraw_cmdline() abort
 
   " Highlight the cursor
   call s:overwrite_highlight(
-        \ options.highlight_cursor,
+        \ 'CmdlineCursor',
         \ 'cmdline_highlight_cursor',
         \ -1,
         \ s:priority_highlight_cursor,

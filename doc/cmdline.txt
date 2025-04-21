@@ -75,14 +75,6 @@ highlight_border
 
 		Default: ''
 
-                                             *cmdline-option-highlight_cursor*
-highlight_cursor
-		The highlight of the cursor.
-		NOTE: It cannot use |hl-Cursor| highlight. Because it is
-		cleared.
-
-		Default: "lCursor"
-
                                              *cmdline-option-highlight_prompt*
 highlight_prompt
 		The highlight of the |input()| prompt.
@@ -214,6 +206,9 @@ color.
 
 ==============================================================================
 COMPATIBILITY                                          *cmdline-compatibility*
+
+2025.04.21
+* Remove "highlight_cursor" option.
 
 
 ==============================================================================

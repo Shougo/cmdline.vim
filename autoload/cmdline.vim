@@ -211,15 +211,6 @@ function cmdline#enable() abort
   let cmdline.hl_msg = hl_msg
   let cmdline.hl_cursor = hl_cursor
 
-  " Set CmdlineCursor highlight instead
-  if has('nvim')
-    call nvim_set_hl(0, 'CmdlineCursor', cmdline.hl_cursor)
-  else
-    let hl_cursor = cmdline.hl_cursor->copy()
-    let hl_cursor.name = 'CmdlineCursor'
-    call hlset(hl_cursor)
-  endif
-
   augroup cmdline
     autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
     " NOTE: CmdlineLeave is also triggered on `<C-r>=`.
@@ -253,8 +244,8 @@ function cmdline#disable() abort
 
     let &guicursor = cmdline.guicursor
   else
-    hi clear MsgArea
-    hi clear Cursor
+    highlight clear MsgArea
+    highlight clear Cursor
     call hlset(cmdline.hl_msg + cmdline.hl_cursor)
 
     let &t_ve = cmdline.t_ve
@@ -324,11 +315,14 @@ function s:redraw_cmdline() abort
   endif
 
   if getcmdtype() ==# ':' && getbufvar(cmdline.buf, "&filetype") ==# ''
+    " Vim highight in command line.
     call setbufvar(cmdline.buf, "&filetype", "vim")
+
     if has('nvim')
       call win_execute(cmdline.id, 'lua vim.treesitter.start()')
     else
       call win_execute(cmdline.id, 'syntax enable')
+
       " NOTE: "syntax enable" restores cursor. Why?
       call s:hidden_cursor()
     endif
@@ -443,6 +437,8 @@ endfunction
 function s:hidden_cursor()
   const hl_normal = has('nvim') ?
         \ nvim_get_hl(0, #{ name: 'Normal'}) : 'Normal'->hlget()
+  let hl_cursor = has('nvim') ?
+        \ nvim_get_hl(0, #{ name: 'Cursor'}) : 'Cursor'->hlget()
 
   if has('nvim')
     let hidden_base = hl_normal->copy()
@@ -491,5 +487,14 @@ function s:hidden_cursor()
           \   hidden_msgarea,
           \   hidden_cursor,
           \ ])
+  endif
+
+  " Set CmdlineCursor highlight instead
+  if has('nvim')
+    call nvim_set_hl(0, 'CmdlineCursor', hl_cursor)
+  elseif !hl_cursor->empty()
+    let hl_cursor = hl_cursor[0]->copy()
+    let hl_cursor.name = 'CmdlineCursor'
+    call hlset([hl_cursor])
   endif
 endfunction

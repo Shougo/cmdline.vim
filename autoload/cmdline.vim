@@ -329,7 +329,11 @@ function s:redraw_cmdline() abort
   endif
 
   " NOTE: ":redraw" is needed to update screen in command line.
-  redraw
+  if has('nvim')
+    redraw!
+  else
+    redraw
+  endif
 endfunction
 
 function! s:close_popup(id) abort

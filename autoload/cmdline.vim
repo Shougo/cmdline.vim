@@ -212,14 +212,18 @@ function cmdline#enable() abort
   let cmdline.hl_cursor = hl_cursor
 
   augroup cmdline
-    autocmd CmdlineEnter,CmdlineChanged * ++nested call s:redraw_cmdline()
+    autocmd CmdlineEnter,CmdlineChanged * ++nested
+          \ call s:redraw_cmdline()
     " NOTE: CmdlineLeave is also triggered on `<C-r>=`.
-    autocmd CmdlineLeave * ++nested call cmdline#disable()
-    autocmd VimLeavePre * ++nested call cmdline#disable()
+    autocmd CmdlineLeave * ++nested
+          \ call cmdline#disable()
+    autocmd VimLeavePre * ++nested
+          \ call cmdline#disable()
   augroup END
 
   if '##CursorMovedC'->exists()
-    autocmd cmdline CursorMovedC * ++nested call s:redraw_cmdline()
+    autocmd cmdline CursorMovedC * ++nested
+          \ call s:redraw_cmdline()
   endif
 
   " NOTE: redraw is needed

@@ -139,9 +139,10 @@ cmdline#disable()
 
                                                             *cmdline#enable()*
 cmdline#enable()
-		Enable cmdline handler and window.  It is enabled when
-		|CmdlineEnter|.
-		NOTE: It is disabled when |CmdlineLeave|.
+		Enable the cmdline handler and window.
+		After enabling, the window is updated on |CmdlineEnter|
+		and |CmdlineChanged|.
+		NOTE: It is disabled on |CmdlineLeave|.
 
                                                              *cmdline#input()*
 cmdline#input({prompt} [, {text} [, {completion}]])
@@ -153,10 +154,10 @@ cmdline#input({prompt} [, {text} [, {completion}]])
                                                         *cmdline#input_opts()*
 cmdline#input_opts({opts})
 		Call |input()| with |cmdline#enable()|.
-		It can replace normal |input()|.
-		Please see |input()| for args.
+		Neovim passes {opts} directly to |input()|.
+		On Vim, only the prompt, default text, and completion
+		arguments are supported.
 		NOTE: It does not support |:echohl|.
-		NOTE: It is Neovim only.
 
                                                         *cmdline#set_option()*
 cmdline#set_option({option-name}, {value})

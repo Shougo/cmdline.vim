@@ -28,7 +28,8 @@ INSTALL                                                      *cmdline-install*
 NOTE: cmdline.vim requires Vim 9.1.0448+ or Neovim 0.10.0+ (latest is
 recommended).
 
-NOTE: You need to set 'guicursor' option to hide cursor.
+NOTE: cmdline.vim temporarily changes 'guicursor' to hide the
+original command-line cursor and restores it when disabled.
 
 ==============================================================================
 INTERFACE                                                  *cmdline-interface*
@@ -36,18 +37,18 @@ INTERFACE                                                  *cmdline-interface*
 ------------------------------------------------------------------------------
 OPTIONS                                                      *cmdline-options*
 
-Options can be toggled through the use of |cmdline#set_option()|.
+Options can be set through |cmdline#set_option()|.
 
                                                         *cmdline-option-blend*
 blend
 		Specify 'winblend' option value.
 		NOTE: Neovim only.
 
-		Default: 'pumblend' value
+		Default: The value of 'pumblend' if available, otherwise 0
 
                                                        *cmdline-option-border*
 border
-		The completion window border.
+		The border of the cmdline floating window.
 		See |nvim_open_win()| or |popup_create-arguments| for the
 		detail.
 
@@ -59,7 +60,7 @@ border
 		"rounded": Neovim only.
 		"solid": Neovim only.
 		"shadow": Neovim only.
-		array: Specifify the eight chars building up the border.
+		array: Specify the characters used to build the border.
 
 		Default: "single"
 
@@ -73,12 +74,13 @@ col
 highlight_border
 		The highlight of the border.
 
-		Default: ''
+		Default: ""
+		Neovim uses "FloatBorder" when this value is empty.
 
                                              *cmdline-option-highlight_prompt*
 highlight_prompt
-		The highlight of the |input()| prompt.
-		NOTE: It is available for |cmdline#input()|.
+		The highlight of the command-line prompt.
+		It is also used for the prompt of |cmdline#input()|.
 
 		Default: "Question"
 

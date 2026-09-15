@@ -49,8 +49,7 @@ blend
                                                        *cmdline-option-border*
 border
 		The border of the cmdline floating window.
-		See |nvim_open_win()| or |popup_create-arguments| for the
-		detail.
+		See |nvim_open_win()| or |popup_create-arguments| for details.
 
 		Following values are available:
 
@@ -184,8 +183,8 @@ FAQ 1:                                                         |cmdline-faq-1|
 	I want to enable cmdline.vim when ":" is pressed.
 
 FAQ 2:                                                         |cmdline-faq-2|
-	I cannot hide the original command line input when use transparent
-	colorscheme.
+	I cannot hide the original command line input when using a transparent
+	colorscheme
 
 ------------------------------------------------------------------------------
 
@@ -202,7 +201,7 @@ NOTE:  You can use |CmdlineEnter| autocmd like this, but it is dangerous. >vim
 Q: I cannot hide the original command line input when use transparent
 colorscheme.
 
-A: You cannot.  Because cmdline.vim hide the original command line by the
+A: You cannot.  Because cmdline.vim hides the original command line using the
 background color.  But transparent colorscheme does not define the background
 color.
 
